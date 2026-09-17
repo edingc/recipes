@@ -1,0 +1,11 @@
+title: Kitchen Index
+tagline: A small collection of things worth cooking twice.
+
+# Optional. Set this to your repo URL and each recipe links to its own Markdown source.
+# repo: https://github.com/yourname/recipes
+
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor

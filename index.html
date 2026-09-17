@@ -1,0 +1,42 @@
+---
+layout: default
+---
+{% assign sections = site.pages | where: "layout", "section" | sort: "order" %}
+
+<div class="hero">
+  <h1>{{ site.tagline }}</h1>
+</div>
+
+<ul class="sections-list">
+  {% for s in sections %}
+  {% assign items = site.pages | where: "layout", "recipe" | where: "dir", s.dir %}
+  <li>
+    <a href="{{ s.url | relative_url }}">
+      <span class="row">
+        <span class="name">{{ s.title }}</span>
+        <span class="dots"></span>
+        <span class="meta">{{ items | size }}</span>
+      </span>
+      {% if s.summary %}<span class="sub">{{ s.summary }}</span>{% endif %}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+
+<h2 class="recent-head">Added recently</h2>
+<ul class="index">
+  {% assign recent = site.pages | where: "layout", "recipe" | sort: "added" | reverse %}
+  {% for r in recent limit: 4 %}
+  {% assign sec = sections | where: "dir", r.dir | first %}
+  <li>
+    <a href="{{ r.url | relative_url }}">
+      <span class="row">
+        <span class="name">{{ r.title }}</span>
+        <span class="dots"></span>
+        <span class="meta">{{ sec.title }}</span>
+      </span>
+      {% if r.summary %}<span class="sub">{{ r.summary }}</span>{% endif %}
+    </a>
+  </li>
+  {% endfor %}
+</ul>

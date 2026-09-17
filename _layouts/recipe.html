@@ -1,0 +1,25 @@
+---
+layout: default
+---
+{% assign sections = site.pages | where: "layout", "section" %}
+{% assign sec = sections | where: "dir", page.dir | first %}
+
+<article class="recipe"{% if page.servings %} data-servings="{{ page.servings }}"{% endif %}>
+
+  <a class="back" href="{{ sec.url | relative_url }}">All {{ sec.title | downcase }}</a>
+
+  <h1 class="page-title">{{ page.title }}</h1>
+  {% if page.summary %}<p class="lede">{{ page.summary }}</p>{% endif %}
+
+  <dl class="facts">
+    {% if page.time %}<div><dt>Time</dt><dd>{{ page.time }}</dd></div>{% endif %}
+    {% if page.servings %}<div><dt>Makes</dt><dd id="servings">{{ page.servings }}</dd></div>{% endif %}
+    {% if page.tags %}<div><dt>Filed under</dt><dd>{{ page.tags | join: ", " }}</dd></div>{% endif %}
+  </dl>
+
+  <div class="prose">
+    {{ content }}
+  </div>
+
+  {% if site.repo %}<p class="source">Read this as plain text: <a href="{{ site.repo }}/blob/main/{{ page.path }}">{{ page.path }}</a></p>{% endif %}
+</article>
