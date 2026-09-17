@@ -77,15 +77,21 @@
     }
 
     // Ingredients become checkable, with their quantity remembered for scaling
-    var ingList = ingredientGroup && ingredientGroup.nodes.filter(function (n) { return n.tagName === "UL"; })[0];
-    if (ingList) {
+    // Every list under the Ingredients heading counts — sub-recipes get their own.
+    var ingLists = ingredientGroup
+      ? ingredientGroup.nodes.filter(function (n) { return n.tagName === "UL"; })
+      : [];
+    var ingItems = [];
+
+    ingLists.forEach(function (ingList) {
       ingList.classList.add("checklist");
       Array.prototype.slice.call(ingList.children).forEach(function (li) {
+        ingItems.push(li);
         li.dataset.original = li.textContent.trim();
         li.innerHTML = '<button class="check" aria-pressed="false"><span class="box"></span><span class="txt">' +
           li.innerHTML + "</span></button>";
       });
-    }
+    });
 
     // Method steps become checkable
     groups.forEach(function (g) {
@@ -108,7 +114,7 @@
 
     // Servings scaler
     var base = parseFloat(article.dataset.servings);
-    if (ingList && isFinite(base) && base > 0) {
+    if (ingLists.length && isFinite(base) && base > 0) {
       var servings = base;
       var step = base >= 4 ? 2 : 1;
       var label = function (n) { return n + (n === 1 ? " serving" : " servings"); };
@@ -118,14 +124,14 @@
       scaler.innerHTML = '<button type="button" data-d="-1" aria-label="Fewer servings">–</button>' +
         "<output>" + label(base) + "</output>" +
         '<button type="button" data-d="1" aria-label="More servings">+</button>';
-      ingList.parentNode.insertBefore(scaler, ingList);
+      ingLists[0].parentNode.insertBefore(scaler, ingLists[0]);
 
       var out = scaler.querySelector("output");
       var factField = document.getElementById("servings");
 
       var apply = function () {
         var factor = servings / base;
-        Array.prototype.slice.call(ingList.children).forEach(function (li) {
+        ingItems.forEach(function (li) {
           var text = li.dataset.original || "";
           var txt = li.querySelector(".txt");
           var m = text.match(LEAD);
